@@ -70,106 +70,236 @@ public class Main {
                     }
                     break;
                 case "read":
-                    System.out.println("Enter the ID of the task: ");
-                    id = input.nextInt();
-                    for (Task task : tasks) {
-                        if (task.getId()==id) {
-                            System.out.println(task);
-                        }
-                    }
-                    trim = input.nextLine();
-                    break;
-                case "update":
-                    System.out.println("Enter the ID of the task: ");
-                    id = input.nextInt();
-                    input.nextLine();
-                    System.out.println("Enter the field you want to change: 1. Title  2. Description  3. Deadline  4. Priority  5. Status");
-                    choice = input.nextInt();
-                    System.out.print("Enter the new value: ");
-                    for (Task task : tasks) {
-                        if (task.getId()==id) {
-                            switch(choice){
-                                case 1: task.setTitle(input.nextLine());
-                                    break;
-                                case 2: task.setDescription(input.nextLine());
-                                    break;
-                                case 3:
-                                    System.out.print("(dd.MM.yyyy HH:mm) ");
-                                    deadline = null;
-                                    while (deadline == null) {
-                                        String deadlineInput = input.nextLine();
-                                        try {
-                                            deadline = LocalDateTime.parse(deadlineInput, f);
-                                        } catch (DateTimeParseException e) {
-                                            System.out.println("Invalid date format. Please try again.");
-                                        }
-                                    }
-                                    task.setDeadline(deadline);
-                                    break;
-                                case 4:
-                                    System.out.print("(1. LOW  2. MEDIUM  3. HIGH) ");
-                                    int value1 = input.nextInt();
-                                    priority = switch (value1) {
-                                        case 1 -> Task.Priority.LOW;
-                                        case 3 -> Task.Priority.HIGH;
-                                        default -> Task.Priority.MEDIUM;
-                                    };
-                                    task.setPriority(priority);
-                                    break;
-                                case 5:
-                                    System.out.print("(1. TODO  2. IN_PROGRESS  3. DONE  4. CANCELLED) ");
-                                    int value2 = input.nextInt();
-                                    status = switch (value2) {
-                                        case 2 -> Task.Status.IN_PROGRESS;
-                                        case 3 -> Task.Status.DONE;
-                                        case 4 -> Task.Status.CANCELLED;
-                                        default -> Task.Status.TODO;
-                                    };
-                                    task.setStatus(status);
-                                    break;
-                                default: break;
+                    if (tasks.isEmpty()) {
+                        System.out.println("There are no tasks yet.");
+                    } else {
+                        System.out.println("Enter the ID of the task: ");
+                        id = input.nextInt();
+                        for (Task task : tasks) {
+                            if (task.getId() == id) {
+                                System.out.println(task);
                             }
                         }
+                        trim = input.nextLine();
                     }
-                    System.out.println("The task was updated.");
-                    trim = input.nextLine();
+                    break;
+                case "update":
+                    if (tasks.isEmpty()) {
+                        System.out.println("There are no tasks yet.");
+                    } else {
+                        System.out.println("Enter the ID of the task: ");
+                        id = input.nextInt();
+                        input.nextLine();
+                        System.out.println("Enter the field you want to change: 1. Title  2. Description  3. Deadline  4. Priority  5. Status");
+                        choice = input.nextInt();
+                        System.out.print("Enter the new value: ");
+                        for (Task task : tasks) {
+                            if (task.getId() == id) {
+                                switch (choice) {
+                                    case 1:
+                                        task.setTitle(input.nextLine());
+                                        break;
+                                    case 2:
+                                        task.setDescription(input.nextLine());
+                                        break;
+                                    case 3:
+                                        System.out.print("(dd.MM.yyyy HH:mm) ");
+                                        deadline = null;
+                                        while (deadline == null) {
+                                            String deadlineInput = input.nextLine();
+                                            try {
+                                                deadline = LocalDateTime.parse(deadlineInput, f);
+                                            } catch (DateTimeParseException e) {
+                                                System.out.println("Invalid date format. Please try again.");
+                                            }
+                                        }
+                                        task.setDeadline(deadline);
+                                        break;
+                                    case 4:
+                                        System.out.print("(1. LOW  2. MEDIUM  3. HIGH) ");
+                                        int value1 = input.nextInt();
+                                        priority = switch (value1) {
+                                            case 1 -> Task.Priority.LOW;
+                                            case 3 -> Task.Priority.HIGH;
+                                            default -> Task.Priority.MEDIUM;
+                                        };
+                                        task.setPriority(priority);
+                                        break;
+                                    case 5:
+                                        System.out.print("(1. TODO  2. IN_PROGRESS  3. DONE  4. CANCELLED) ");
+                                        int value2 = input.nextInt();
+                                        status = switch (value2) {
+                                            case 2 -> Task.Status.IN_PROGRESS;
+                                            case 3 -> Task.Status.DONE;
+                                            case 4 -> Task.Status.CANCELLED;
+                                            default -> Task.Status.TODO;
+                                        };
+                                        task.setStatus(status);
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                System.out.println("The task was updated.");
+                            }
+                        }
+                        trim = input.nextLine();
+                    }
                     break;
                 case "delete":
-                    System.out.println("Enter the ID of the task: ");
-                    id = input.nextInt();
-                    for (Task task : tasks) {
-                        if (task.getId()==id) {
-                            tasks.remove(task);
-                            break;
+                    if (tasks.isEmpty()) {
+                        System.out.println("There are no tasks yet.");
+                    } else {
+                        System.out.println("Enter the ID of the task: ");
+                        id = input.nextInt();
+                        for (Task task : tasks) {
+                            if (task.getId() == id) {
+                                tasks.remove(task);
+                                System.out.println("The task was deleted.");
+                                break;
+                            }
                         }
+                        trim = input.nextLine();
                     }
-                    System.out.println("The task was deleted.");
-                    trim = input.nextLine();
                     break;
                 case "find":
-                    // TODO find tasks by one of fields
-                    break;
-                case "sort":
-                    System.out.println("Sort by: 0. ID  1. Title  2. Deadline  3. Priority  4. Status");
-                    choice = input.nextInt();
-                    switch(choice) {
-                        case 1:
-                            Collections.sort(tasks, (t1, t2) -> t1.getTitle().compareTo(t2.getTitle()));
-                            break;
-                        case 2:
-                            Collections.sort(tasks, (t1, t2) -> t1.getDeadline().compareTo(t2.getDeadline()));
-                            break;
-                        case 3:
-                            Collections.sort(tasks, (t1, t2) -> t2.getPriority().compareTo(t1.getPriority()));
-                            break;
-                        case 4:
-                            Collections.sort(tasks, (t1, t2) -> t1.getStatus().compareTo(t2.getStatus()));
-                            break;
-                        default: Collections.sort(tasks, (t1, t2) -> Integer.compare(t1.getId(), t2.getId()));
+                    if (tasks.isEmpty()) {
+                        System.out.println("There are no tasks yet.");
+                    } else {
+                        System.out.println("Enter the field you want to search by: 0. ID  1. Title  2. Description  3. Deadline  4. Priority  5. Status");
+                        choice = input.nextInt();
+                        trim = input.nextLine();
+                        int number;
+                        String line;
+                        int count = 0;
+                        System.out.print("Enter the value: ");
+                        switch (choice) {
+                            case 0:
+                                number = input.nextInt();
+                                for (Task task : tasks) {
+                                    if (task.getId() == number) {
+                                        System.out.println(task);
+                                        count++;
+                                    }
+                                }
+                                if (count == 0) {
+                                    System.out.println("No results found.");
+                                } else {
+                                    count = 0;
+                                }
+                                trim = input.nextLine();
+                                break;
+                            case 1:
+                                line = input.nextLine();
+                                for (Task task : tasks) {
+                                    if (Objects.equals(task.getTitle(), line)) {
+                                        System.out.println(task);
+                                        count++;
+                                    }
+                                }
+                                if (count == 0) {
+                                    System.out.println("No results found.");
+                                } else {
+                                    count = 0;
+                                }
+                                break;
+                            case 2:
+                                line = input.nextLine();
+                                for (Task task : tasks) {
+                                    if (task.getDescription().contains(line)) {
+                                        System.out.println(task);
+                                        count++;
+                                    }
+                                }
+                                if (count == 0) {
+                                    System.out.println("No results found.");
+                                } else {
+                                    count = 0;
+                                }
+                                break;
+                            case 3:
+                                deadline = null;
+                                while (deadline == null) {
+                                    System.out.println("Enter the deadline you want to find (dd.MM.yyyy HH:mm): ");
+                                    String deadlineInput = input.nextLine();
+                                    try {
+                                        deadline = LocalDateTime.parse(deadlineInput, f);
+                                    } catch (DateTimeParseException e) {
+                                        System.out.println("Invalid date format. Please try again.");
+                                    }
+                                }
+                                for (Task task : tasks) {
+                                    if (Objects.equals(task.getDeadline(), deadline)) {
+                                        System.out.println(task);
+                                        count++;
+                                    }
+                                }
 
+                                if (count == 0) {
+                                    System.out.println("No results found.");
+                                } else {
+                                    count = 0;
+                                }
+                                break;
+                            case 4:
+                                System.out.print("(1. LOW  2. MEDIUM  3. HIGH) ");
+                                number = input.nextInt();
+                                for (Task task : tasks) {
+                                    if (task.getPriority().ordinal() + 1 == number) {
+                                        System.out.println(task);
+                                        count++;
+                                    }
+                                }
+                                if (count == 0) {
+                                    System.out.println("No results found.");
+                                } else {
+                                    count = 0;
+                                }
+                                trim = input.nextLine();
+                                break;
+                            case 5:
+                                System.out.print("(1. TODO  2. IN_PROGRESS  3. DONE  4. CANCELLED) ");
+                                number = input.nextInt();
+                                for (Task task : tasks) {
+                                    if (task.getStatus().ordinal() + 1 == number) {
+                                        System.out.println(task);
+                                        count++;
+                                    }
+                                }
+                                if (count == 0) {
+                                    System.out.println("No results found.");
+                                } else {
+                                    count = 0;
+                                }
+                                trim = input.nextLine();
+                                break;
+                            default:
+                                System.out.println("Invalid choice. Please try again.");
+                                break;
+                        }
                     }
-                    for (Task task : tasks) {
-                        System.out.println(task);
+                    break;
+
+                case "sort":
+                    if (tasks.isEmpty()) {
+                        System.out.println("There are no tasks to sort");
+                    } else {
+                        System.out.println("Sort by: 0. ID  1. Title  2. Deadline  3. Priority  4. Status");
+                        choice = input.nextInt();
+                        switch(choice) {
+                            case 1:
+                                Collections.sort(tasks, (t1, t2) -> t1.getTitle().compareTo(t2.getTitle()));
+                                break;
+                            case 2:
+                                Collections.sort(tasks, (t1, t2) -> t1.getDeadline().compareTo(t2.getDeadline()));
+                                break;
+                            case 3:
+                                Collections.sort(tasks, (t1, t2) -> t2.getPriority().compareTo(t1.getPriority()));
+                                break;
+                            case 4:
+                                Collections.sort(tasks, (t1, t2) -> t1.getStatus().compareTo(t2.getStatus()));
+                                break;
+                            default: Collections.sort(tasks, (t1, t2) -> Integer.compare(t1.getId(), t2.getId()));
+                        }
                     }
                     trim = input.nextLine();
                     break;
