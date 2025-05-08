@@ -1,5 +1,6 @@
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 
 public class Main {
@@ -27,8 +28,18 @@ public class Main {
                     String title = input.nextLine();
                     System.out.println("Enter the description of the task: ");
                     String description = input.nextLine();
-                    System.out.println("Enter the deadline of the task (dd.MM.yyyy HH:mm): ");
-                    LocalDateTime deadline = LocalDateTime.parse(input.nextLine(), f);
+
+                    LocalDateTime deadline = null;
+                    while (deadline == null) {
+                        System.out.println("Enter the deadline of the task (dd.MM.yyyy HH:mm): ");
+                        String deadlineInput = input.nextLine();
+                        try {
+                            deadline = LocalDateTime.parse(deadlineInput, f);
+                        } catch (DateTimeParseException e) {
+                            System.out.println("Invalid date format. Please try again.");
+                        }
+                    }
+
                     System.out.println("Select Priority: 1. LOW  2. MEDIUM  3. HIGH");
                     choice = input.nextInt();
                     priority = switch (choice) {
@@ -84,8 +95,16 @@ public class Main {
                                     break;
                                 case 3:
                                     System.out.print("(dd.MM.yyyy HH:mm) ");
-                                    LocalDateTime newDeadline = LocalDateTime.parse(input.nextLine(), f);
-                                    task.setDeadline(newDeadline);
+                                    deadline = null;
+                                    while (deadline == null) {
+                                        String deadlineInput = input.nextLine();
+                                        try {
+                                            deadline = LocalDateTime.parse(deadlineInput, f);
+                                        } catch (DateTimeParseException e) {
+                                            System.out.println("Invalid date format. Please try again.");
+                                        }
+                                    }
+                                    task.setDeadline(deadline);
                                     break;
                                 case 4:
                                     System.out.print("(1. LOW  2. MEDIUM  3. HIGH) ");
@@ -131,7 +150,28 @@ public class Main {
                     // TODO find tasks by one of fields
                     break;
                 case "sort":
-                    // TODO sort tasks by one of fields
+                    System.out.println("Sort by: 0. ID  1. Title  2. Deadline  3. Priority  4. Status");
+                    choice = input.nextInt();
+                    switch(choice) {
+                        case 1:
+                            Collections.sort(tasks, (t1, t2) -> t1.getTitle().compareTo(t2.getTitle()));
+                            break;
+                        case 2:
+                            Collections.sort(tasks, (t1, t2) -> t1.getDeadline().compareTo(t2.getDeadline()));
+                            break;
+                        case 3:
+                            Collections.sort(tasks, (t1, t2) -> t2.getPriority().compareTo(t1.getPriority()));
+                            break;
+                        case 4:
+                            Collections.sort(tasks, (t1, t2) -> t1.getStatus().compareTo(t2.getStatus()));
+                            break;
+                        default: Collections.sort(tasks, (t1, t2) -> Integer.compare(t1.getId(), t2.getId()));
+
+                    }
+                    for (Task task : tasks) {
+                        System.out.println(task);
+                    }
+                    trim = input.nextLine();
                     break;
                 case "exit":
                     System.out.println("Application closed");
