@@ -1,6 +1,15 @@
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+
+import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
+
 import java.util.*;
 
 public class Main {
@@ -10,6 +19,24 @@ public class Main {
 
         Scanner input = new Scanner(System.in);
         List<Task> tasks = new ArrayList<>();
+
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeTypeAdapter())
+                .create();
+
+        File file = new File("tasks.json");
+        if (file.exists()) {
+            try (FileReader reader = new FileReader("tasks.json")) {
+                Type tasksType = new TypeToken<List<Task>>(){}.getType();
+                tasks = gson.fromJson(reader, tasksType);
+                System.out.println("Loaded tasks from file.");
+            } catch (IOException e) {
+                System.out.println("Error reading tasks: " + e.getMessage());
+            }
+        }
+
+
+
         System.out.println("Possible commands: add, view all, read, update, find, sort, delete, exit.");
         System.out.println("Enter command: ");
         boolean running = true;
@@ -305,6 +332,14 @@ public class Main {
                     break;
                 case "exit":
                     System.out.println("Application closed");
+                    String json = gson.toJson(tasks);
+                    try (FileWriter writer = new FileWriter("tasks.json")) {
+                        writer.write(json);
+                        System.out.println("Tasks saved to tasks.json");
+                    } catch (IOException e) {
+                        System.out.println("Error saving tasks: " + e.getMessage());
+                    }
+
                     running = false;
                     break;
                 default:

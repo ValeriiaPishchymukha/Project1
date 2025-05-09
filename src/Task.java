@@ -17,7 +17,7 @@ public class Task {
     public enum Status {
         TODO, IN_PROGRESS, DONE, CANCELLED
     }
-
+    public Task() {}
     public Task(int id, String title, String description, LocalDateTime deadline, Priority priority, Status status) {
         this.id = id;
         this.title = title;
